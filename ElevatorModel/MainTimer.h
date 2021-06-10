@@ -30,7 +30,7 @@ public:
 
 	// return "days hours mins"
 	String^ GetTimeInfo() {
-		return Convert::ToString(days) + " " + Convert::ToString(hours) + " " + Convert::ToString(mins);
+		return Convert::ToString(days) + " " + Convert::ToString(hours % SHID) + " " + Convert::ToString(mins % SSIM);
 	}
 
 	bool IsFirstRun() {
