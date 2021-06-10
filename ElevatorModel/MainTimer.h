@@ -1,7 +1,6 @@
 #pragma once
 public delegate void HourChangeHandler(int hour);
 public delegate void MinChangeHandler();
-public delegate void TimerEndHandler();
 
 using namespace System;
 using namespace System::Threading;
