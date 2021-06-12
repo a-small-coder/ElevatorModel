@@ -16,6 +16,7 @@ void main(array<String^>^ args) {
 
 MyForm::MyForm(void)
 {
+	//delegeteWeather = gcnew ChangeWeatherInfo(this, &ElevatorModel::MyForm::ChangeInformation);
 	InitializeComponent();
 	mainTimer = gcnew MainTimer();
 	env = gcnew Enviroment();
@@ -25,14 +26,30 @@ MyForm::MyForm(void)
 	 
 }
 
+void MyForm::InvokeSetText(Label^ label, String^ text) {
+	label->Text = text;
+}
+
+void MyForm::InvokeSetImage(PictureBox^ pictureBox, Image^ img) {
+	pictureBox->Image = img;
+}
+
 void MyForm::ChangeBackgroundImg(int currentHour) {
-	mainBackground->Image = env->GetCurrentImage();
+	Image^ img = env->GetCurrentImage();
+	String^ temp1 = "Current weather: " + env->GetEnviromentView()->Split(' ')[1];
+	String^ temp2 = "Current part of day: " + env->GetEnviromentView()->Split(' ')[0];
+	mainBackground->BeginInvoke(gcnew ChangePictureBoxImage(this, &MyForm::InvokeSetImage), mainBackground, img);
+	weatherLabel->BeginInvoke(gcnew ChangeTextBoxValue(this, &MyForm::InvokeSetText), weatherLabel, temp1);
+	partOfDayLabel->BeginInvoke(gcnew ChangeTextBoxValue(this, &MyForm::InvokeSetText), partOfDayLabel, temp2);
+	
 }
 
 void MyForm::ChangeInformation() {
 	String^ tempData = mainTimer->GetTimeInfo();
-	timeInfoLabel->Text = "Current time: " + tempData->Split(' ')[1] + ":" + tempData->Split(' ')[2];
-	dateInfoLabel->Text = "Days late: " + tempData->Split(' ')[0];
+	String^ tempData1 = "Current time: " + tempData->Split(' ')[1] + ":" + tempData->Split(' ')[2];
+	String^ tempData2 = "Days late: " + tempData->Split(' ')[0];
+	timeInfoLabel->BeginInvoke(gcnew ChangeTextBoxValue(this, &MyForm::InvokeSetText), timeInfoLabel, tempData1);
+	dateInfoLabel->BeginInvoke(gcnew ChangeTextBoxValue(this, &MyForm::InvokeSetText), dateInfoLabel, tempData2);
 }
 
 System::Void MyForm::TimerStartStopBtn_Click(System::Object^ sender, System::EventArgs^ e) {

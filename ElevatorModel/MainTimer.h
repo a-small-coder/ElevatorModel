@@ -50,7 +50,7 @@ public:
 		timeSpeed = DTimeS;
 		sec = 0.0;
 		mins = 0;
-		hours = 0;
+		hours = 6;
 		days = 0;
 		stop = true;
 	}

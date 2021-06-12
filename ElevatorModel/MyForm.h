@@ -31,14 +31,23 @@ namespace ElevatorModel {
 			}
 		}
 	private: System::Windows::Forms::PictureBox^ mainBackground;
+	private: System::Windows::Forms::GroupBox^ timeGroupBox;
+
 	protected:
 
 	protected:
-	private: System::Windows::Forms::GroupBox^ groupBox1;
+
 	private: System::Windows::Forms::Button^ TimerStartStopBtn;
 	private: System::Windows::Forms::Label^ dateInfoLabel;
 	private: System::Windows::Forms::Label^ timeInfoLabel;
 	private: System::Windows::Forms::TrackBar^ timeTrackBar;
+	private: System::Windows::Forms::GroupBox^ weatherGroupBox;
+	private: System::Windows::Forms::Label^ weatherLabel;
+
+
+
+	private: System::Windows::Forms::Label^ partOfDayLabel;
+
 
 
 
@@ -59,36 +68,40 @@ namespace ElevatorModel {
 		{
 			System::ComponentModel::ComponentResourceManager^ resources = (gcnew System::ComponentModel::ComponentResourceManager(MyForm::typeid));
 			this->mainBackground = (gcnew System::Windows::Forms::PictureBox());
-			this->groupBox1 = (gcnew System::Windows::Forms::GroupBox());
+			this->timeGroupBox = (gcnew System::Windows::Forms::GroupBox());
 			this->TimerStartStopBtn = (gcnew System::Windows::Forms::Button());
 			this->dateInfoLabel = (gcnew System::Windows::Forms::Label());
 			this->timeInfoLabel = (gcnew System::Windows::Forms::Label());
 			this->timeTrackBar = (gcnew System::Windows::Forms::TrackBar());
+			this->weatherGroupBox = (gcnew System::Windows::Forms::GroupBox());
+			this->weatherLabel = (gcnew System::Windows::Forms::Label());
+			this->partOfDayLabel = (gcnew System::Windows::Forms::Label());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->mainBackground))->BeginInit();
-			this->groupBox1->SuspendLayout();
+			this->timeGroupBox->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->timeTrackBar))->BeginInit();
+			this->weatherGroupBox->SuspendLayout();
 			this->SuspendLayout();
 			// 
 			// mainBackground
 			// 
 			this->mainBackground->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"mainBackground.Image")));
-			this->mainBackground->Location = System::Drawing::Point(0, -39);
+			this->mainBackground->Location = System::Drawing::Point(-5, -9);
 			this->mainBackground->Name = L"mainBackground";
-			this->mainBackground->Size = System::Drawing::Size(585, 750);
+			this->mainBackground->Size = System::Drawing::Size(557, 750);
 			this->mainBackground->TabIndex = 0;
 			this->mainBackground->TabStop = false;
 			// 
-			// groupBox1
+			// timeGroupBox
 			// 
-			this->groupBox1->Controls->Add(this->TimerStartStopBtn);
-			this->groupBox1->Controls->Add(this->dateInfoLabel);
-			this->groupBox1->Controls->Add(this->timeInfoLabel);
-			this->groupBox1->Location = System::Drawing::Point(592, 13);
-			this->groupBox1->Name = L"groupBox1";
-			this->groupBox1->Size = System::Drawing::Size(185, 100);
-			this->groupBox1->TabIndex = 1;
-			this->groupBox1->TabStop = false;
-			this->groupBox1->Text = L"Time info";
+			this->timeGroupBox->Controls->Add(this->TimerStartStopBtn);
+			this->timeGroupBox->Controls->Add(this->dateInfoLabel);
+			this->timeGroupBox->Controls->Add(this->timeInfoLabel);
+			this->timeGroupBox->Location = System::Drawing::Point(592, 13);
+			this->timeGroupBox->Name = L"timeGroupBox";
+			this->timeGroupBox->Size = System::Drawing::Size(185, 100);
+			this->timeGroupBox->TabIndex = 1;
+			this->timeGroupBox->TabStop = false;
+			this->timeGroupBox->Text = L"Time info";
 			// 
 			// TimerStartStopBtn
 			// 
@@ -130,30 +143,68 @@ namespace ElevatorModel {
 			this->timeTrackBar->Value = 3;
 			this->timeTrackBar->Scroll += gcnew System::EventHandler(this, &MyForm::timeTrackBar_Scroll);
 			// 
+			// weatherGroupBox
+			// 
+			this->weatherGroupBox->Controls->Add(this->weatherLabel);
+			this->weatherGroupBox->Controls->Add(this->partOfDayLabel);
+			this->weatherGroupBox->Location = System::Drawing::Point(592, 183);
+			this->weatherGroupBox->Name = L"weatherGroupBox";
+			this->weatherGroupBox->Size = System::Drawing::Size(185, 100);
+			this->weatherGroupBox->TabIndex = 3;
+			this->weatherGroupBox->TabStop = false;
+			this->weatherGroupBox->Text = L"Weather";
+			// 
+			// weatherLabel
+			// 
+			this->weatherLabel->AutoSize = true;
+			this->weatherLabel->Location = System::Drawing::Point(8, 57);
+			this->weatherLabel->Name = L"weatherLabel";
+			this->weatherLabel->Size = System::Drawing::Size(85, 13);
+			this->weatherLabel->TabIndex = 3;
+			this->weatherLabel->Text = L"Current weather:";
+			// 
+			// partOfDayLabel
+			// 
+			this->partOfDayLabel->AutoSize = true;
+			this->partOfDayLabel->Location = System::Drawing::Point(7, 29);
+			this->partOfDayLabel->Name = L"partOfDayLabel";
+			this->partOfDayLabel->Size = System::Drawing::Size(97, 13);
+			this->partOfDayLabel->TabIndex = 3;
+			this->partOfDayLabel->Text = L"Current part of day:";
+			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(784, 711);
+			this->Controls->Add(this->weatherGroupBox);
 			this->Controls->Add(this->timeTrackBar);
-			this->Controls->Add(this->groupBox1);
+			this->Controls->Add(this->timeGroupBox);
 			this->Controls->Add(this->mainBackground);
 			this->MaximizeBox = false;
 			this->Name = L"MyForm";
 			this->Text = L"MyForm";
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->mainBackground))->EndInit();
-			this->groupBox1->ResumeLayout(false);
-			this->groupBox1->PerformLayout();
+			this->timeGroupBox->ResumeLayout(false);
+			this->timeGroupBox->PerformLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->timeTrackBar))->EndInit();
+			this->weatherGroupBox->ResumeLayout(false);
+			this->weatherGroupBox->PerformLayout();
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
 		}
 #pragma endregion
-	private:
+public:
+	delegate void ChangeTextBoxValue(Label^ label, String^ text);
+	delegate void ChangePictureBoxImage(PictureBox^ txtBox, Image^ img);
+
+private:
 		MainTimer^ mainTimer;
 		Thread^ timerThread;
 		Enviroment^ env;
+		void InvokeSetText(Label^ label, String^ text);
+		void InvokeSetImage(PictureBox^ pictureBox, Image^ img);
 		void ChangeBackgroundImg(int currentHour);
 		void ChangeInformation();
 		System::Void TimerStartStopBtn_Click(System::Object^ sender, System::EventArgs^ e);
