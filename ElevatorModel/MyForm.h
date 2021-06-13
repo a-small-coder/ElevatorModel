@@ -1,4 +1,5 @@
 #pragma once
+#include "Human.h"
 #include "MainTimer.h"
 #include "Enviroment.h"
 namespace ElevatorModel {
@@ -47,6 +48,7 @@ namespace ElevatorModel {
 
 
 	private: System::Windows::Forms::Label^ partOfDayLabel;
+
 
 
 
@@ -197,14 +199,22 @@ namespace ElevatorModel {
 #pragma endregion
 public:
 	delegate void ChangeTextBoxValue(Label^ label, String^ text);
-	delegate void ChangePictureBoxImage(PictureBox^ txtBox, Image^ img);
+	delegate void ChangePictureBoxImage(PictureBox^ txtBox, Image^ img, bool visible);
+	delegate void ChangePictureBoxLocation(PictureBox^ pictBox, Point^ point);
+	delegate void InitialazePictureBox(PictureBox^ pictBox, Human^ human);
 
 private:
 		MainTimer^ mainTimer;
 		Thread^ timerThread;
 		Enviroment^ env;
+		array<PictureBox^>^ humansPictures;
+		void Paint();
+		void InitPictureBox(PictureBox^ pictBox, Human^ hum);
+		void InitializeCitizens(array<Human^>^ humans);
+		void PaintHumans(array<Human^>^ humans);
+		void InvokeSetLocation(PictureBox^ pictureBox, Point^ point);
 		void InvokeSetText(Label^ label, String^ text);
-		void InvokeSetImage(PictureBox^ pictureBox, Image^ img);
+		void InvokeSetImage(PictureBox^ pictureBox, Image^ img, bool visible);
 		void ChangeBackgroundImg(int currentHour);
 		void ChangeInformation();
 		System::Void TimerStartStopBtn_Click(System::Object^ sender, System::EventArgs^ e);

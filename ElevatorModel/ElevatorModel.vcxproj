@@ -120,11 +120,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Enviroment.cpp" />
+    <ClCompile Include="Human.cpp" />
     <ClCompile Include="MyForm.cpp" />
     <ClCompile Include="MainTimer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Enviroment.h" />
+    <ClInclude Include="Human.h" />
     <ClInclude Include="MyForm.h">
       <FileType>CppForm</FileType>
     </ClInclude>

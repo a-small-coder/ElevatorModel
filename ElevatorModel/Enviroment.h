@@ -1,4 +1,5 @@
 #include "MainTimer.h"
+#include "Human.h"
 #include <iostream>
 #include <ctime>
 #using <system.drawing.dll>
@@ -28,26 +29,44 @@ private:
 	static Image^ nightStormImg;
 	Image^ currentImg;
 	const int CHANCE = 1;
-	int weatherUpVal;
-	int weatherDownVal;
 	int coutnWeatherTypes = 3;
+	int citizenCount = 5;
 	static Dictionary<String^, Image^>^ dict = dictInitializer();
 	String^ enviromentView;
 	String^ dayType;
 	String^ weatherType;
+	array<Human^>^ humans;
+	
 
 
 public:
 
 	Enviroment() {
+		//Human::OnOpenDoor += gcnew OpenDoorHandler(this, &Enviroment::OpenDoor);
 		srand(static_cast<unsigned int>(time(NULL)));
-		weatherUpVal = 2;
-		weatherDownVal = 0;
 		MainTimer::OnHourChange += gcnew HourChangeHandler(this, &Enviroment::SetEnviromentView);
 		currentImg = dayClearImg;
 		dayType = "”тро";
 		weatherType = "ясно";
 		enviromentView = dayType + " " + weatherType;
+
+	}
+
+	/*void OpenDoor(int doorType, int doorVerticalLvl) {
+
+	}*/
+
+	void createCitizens(int count) {
+		count = citizenCount;
+		humans = gcnew array<Human^, 1>(count);
+		for (int i = 0; i < humans->Length; i++) {
+			Human^ chel = gcnew Human();
+			humans[i] = chel;
+		}
+	}
+
+	array<Human^>^ getCitizens() {
+		return humans;
 	}
 
 	static Dictionary<String^, Image^>^ dictInitializer() {

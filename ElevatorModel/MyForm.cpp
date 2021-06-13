@@ -20,17 +20,64 @@ MyForm::MyForm(void)
 	InitializeComponent();
 	mainTimer = gcnew MainTimer();
 	env = gcnew Enviroment();
+	env->createCitizens(5);
+	InitializeCitizens(env->getCitizens());
 	MainTimer::OnHourChange += gcnew HourChangeHandler(this, &ElevatorModel::MyForm::ChangeBackgroundImg);
 	MainTimer::OnMinChange += gcnew MinChangeHandler(this, &ElevatorModel::MyForm::ChangeInformation);
+	MainTimer::OnMinChange += gcnew MinChangeHandler(this, &ElevatorModel::MyForm::Paint);
 	
 	 
+}
+
+void MyForm::Paint() {
+	PaintHumans(env->getCitizens());
+}
+
+void MyForm::InitializeCitizens(array<Human^>^ humans) {
+	humansPictures = gcnew array<PictureBox^, 1>(humans->Length);
+	for (int i = 0; i < humans->Length; i++) {
+		Rectangle^ dim = humans[i]->getDimentionsImg();
+		PictureBox^ testHumanPB = gcnew PictureBox();
+		InitPictureBox(testHumanPB, humans[i]);
+		//testHumanPB->BeginInvoke(gcnew InitialazePictureBox(this, &MyForm::InitPictureBox), testHumanPB, humans[i]);
+		humansPictures[i] = testHumanPB;
+	}
+}
+
+void MyForm::InitPictureBox(PictureBox^ pictBox, Human^ hum) {
+	Rectangle^ dim = hum->getDimentionsImg();
+	pictBox->Width = dim->Width;
+	pictBox->Height = dim->Height;
+	pictBox->Location = Point(dim->X, dim->Y);
+	pictBox->Visible = hum->isVisible();
+	this->Controls->Add(pictBox);
+	pictBox->BringToFront();
+}
+
+void MyForm::PaintHumans(array <Human^>^ humans) {
+	for (int i = 0; i < humans->Length; i++) {
+		if (humans[i]->isVisible()) {
+			Rectangle^ dim = humans[i]->getDimentionsImg();
+			humansPictures[i]->BeginInvoke(gcnew ChangePictureBoxImage(this, &MyForm::InvokeSetImage), humansPictures[i], humans[i]->getImage(), humans[i]->isVisible());
+			humansPictures[i]->BeginInvoke(gcnew ChangePictureBoxLocation(this, &MyForm::InvokeSetLocation), humansPictures[i], Point(dim->X, dim->Y));
+		}
+		else {
+			humansPictures[i]->BeginInvoke(gcnew ChangePictureBoxImage(this, &MyForm::InvokeSetImage), humansPictures[i], humans[i]->getImage(), humans[i]->isVisible());
+		}
+	}
+}
+
+void MyForm::InvokeSetLocation(PictureBox^ pictureBox, Point^ point) {
+	pictureBox->Location = Point(point->X, point->Y);
 }
 
 void MyForm::InvokeSetText(Label^ label, String^ text) {
 	label->Text = text;
 }
 
-void MyForm::InvokeSetImage(PictureBox^ pictureBox, Image^ img) {
+
+void MyForm::InvokeSetImage(PictureBox^ pictureBox, Image^ img, bool visible) {
+	pictureBox->Visible = visible;
 	pictureBox->Image = img;
 }
 
@@ -38,7 +85,7 @@ void MyForm::ChangeBackgroundImg(int currentHour) {
 	Image^ img = env->GetCurrentImage();
 	String^ temp1 = "Current weather: " + env->GetEnviromentView()->Split(' ')[1];
 	String^ temp2 = "Current part of day: " + env->GetEnviromentView()->Split(' ')[0];
-	mainBackground->BeginInvoke(gcnew ChangePictureBoxImage(this, &MyForm::InvokeSetImage), mainBackground, img);
+	mainBackground->BeginInvoke(gcnew ChangePictureBoxImage(this, &MyForm::InvokeSetImage), mainBackground, img, true);
 	weatherLabel->BeginInvoke(gcnew ChangeTextBoxValue(this, &MyForm::InvokeSetText), weatherLabel, temp1);
 	partOfDayLabel->BeginInvoke(gcnew ChangeTextBoxValue(this, &MyForm::InvokeSetText), partOfDayLabel, temp2);
 	
