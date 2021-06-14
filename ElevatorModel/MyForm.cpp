@@ -1,5 +1,4 @@
 #include "MyForm.h"
-#include "Human.h"
 #include <iostream>
 #include <ctime>
 #using <system.drawing.dll>
@@ -153,7 +152,7 @@ System::Void MyForm::timeTrackBar_Scroll(System::Object^ sender, System::EventAr
 		mainTimer->SetTimeSpeed(90, 25);
 	}
 	if (timeTrackBar->Value == 5) {
-		mainTimer->SetTimeSpeed(960, 10);
+		mainTimer->SetTimeSpeed(1080, 10);
 	}
 	if (mainTimer->IsRunning()) {
 		timerThread->Abort();

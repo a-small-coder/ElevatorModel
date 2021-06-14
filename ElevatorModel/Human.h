@@ -42,20 +42,20 @@ protected:
 	Image^ img;
 	bool halfStairswalk;
 	bool needGoBack;
+	bool needGoOut;
 	int whenGoHome;
 	int whenGoOut;
+	int whenGoMin;
 	int behaviorType;
 	int elevatorWaitingTimeRand = 20 * 6;
 	static int countObjects = 0;
 	int id;
-	//bool needPictureResize;
 public:
 	static event OpenDoorHandler^ OnOpenDoor;
 	event ChangePictureHandler^ ChangePicture;
 	Human() {
 		MainTimer::OnMinChange += gcnew MinChangeHandler(this, &Human::live);
 		MainTimer::OnHourChange += gcnew HourChangeHandler(this, &Human::setNeedGoBack);
-		//srand(static_cast<unsigned int>(time(NULL)));
 		totalVerticalLvl = rrand(2, 9);
 		x = homeDoorX;
 		y = 650 + 14 - totalVerticalLvl*64;
@@ -69,33 +69,47 @@ public:
 		elevatorWaitingTime = rrand(elevatorWaitingTimeRand, elevatorWaitingTimeRand*2);
 		halfStairswalk = false;
 		needGoBack = false;
+		needGoOut = false;
 		whenGoHome = rrand(18, 22);
 		whenGoOut = rrand(6, 10);
 		behaviorType = rrand(1, 4);
 		img = Image::FromFile("img\\people" + Convert::ToString(behaviorType) + ".png");
 		countObjects += 1;
 		id = countObjects;
+		whenGoMin = (behaviorType * 5 + rrand(5, 25)) * 6;
 	}
 
 	void setNeedGoBack(int hour) {
 		if (hour == whenGoHome) {
 			needGoBack = true;
+			needGoOut = false;
 			elevatorWaitingTime = rrand(elevatorWaitingTimeRand, elevatorWaitingTimeRand * 2);
+			whenGoMin = (behaviorType * 5 + rrand(5, 25)) * 6;
 		}
 		if (hour == whenGoOut) {
 			needGoBack = false;
+			needGoOut = true;
 			elevatorWaitingTime = rrand(elevatorWaitingTimeRand, elevatorWaitingTimeRand * 2);
+			whenGoMin = (behaviorType * 5 + rrand(5, 25)) * 6;
 		}
 
+	}
+
+	void waitingMins() {
+		if (whenGoMin > 0) {
+			whenGoMin--;
+		}
 	}
 
 	void live() {
 		if (behaviorType == 2) {
 			// ------go back--------
+			
 			if (needGoBack) {
+				
 				goFromOtherHomeToHome();
 			}
-			else // ----go to neighbour----
+			if (needGoOut) // ----go to neighbour----
 			{
 				goFromHomeToOtherHome();
 			}
@@ -106,7 +120,7 @@ public:
 			if (needGoBack) {
 				goFromStreetToHome();
 			}
-			else // ----go work----
+			if (needGoOut) // ----go work----
 			{
 				goFromHomeToStreet();
 			}
@@ -116,8 +130,12 @@ public:
 
 	void goFromHomeToOtherHome() {
 		if (whatObjectNearby == 0) { // at home
-			visible = true;
-			goToElevator();
+			waitingMins();
+			if (whenGoMin == 0) {
+				visible = true;
+				goToElevator();
+			}
+			
 		}
 		if (whatObjectNearby == 1) { // at elevator
 			waitElevator();
@@ -151,8 +169,11 @@ public:
 
 	void goFromOtherHomeToHome() {
 		if (whatObjectNearby == 9) {
-			visible = true;
-			goToElevator();
+			waitingMins();
+			if (whenGoMin == 0) {
+				visible = true;
+				goToElevator();
+			}
 		}
 		if (whatObjectNearby == 1) { // at elevator
 			waitElevator();
@@ -186,8 +207,11 @@ public:
 
 	void goFromHomeToStreet() {
 		if (whatObjectNearby == 0) { // at home
-			visible = true;
-			goToElevator();
+			waitingMins();
+			if (whenGoMin == 0) {
+				visible = true;
+				goToElevator();
+			}
 		}
 		if (whatObjectNearby == 1) { // at elevator
 			waitElevator();
@@ -217,8 +241,11 @@ public:
 
 	void goFromStreetToHome() {
 		if (whatObjectNearby == 6) {
-			visible = true;
-			moveToHouse();
+			waitingMins();
+			if (whenGoMin == 0) {
+				visible = true;
+				moveToHouse();
+			}
 		}
 		if (whatObjectNearby == 8) {
 			goInHouse();
@@ -465,5 +492,5 @@ public:
 	int getHomeIndex() {
 		return homeIndex;
 	}
+};
 
-}; 
