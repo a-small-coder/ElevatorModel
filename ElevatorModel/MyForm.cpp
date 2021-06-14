@@ -20,6 +20,9 @@ MyForm::MyForm(void)
 	InitializeComponent();
 	mainTimer = gcnew MainTimer();
 	env = gcnew Enviroment();
+	elevator = gcnew Elevator();
+	elevatorPicture = gcnew PictureBox();
+	InitPictureBox(elevatorPicture, elevator);
 	env->createCitizens(5);
 	InitializeCitizens(env->getCitizens());
 	MainTimer::OnHourChange += gcnew HourChangeHandler(this, &ElevatorModel::MyForm::ChangeBackgroundImg);
@@ -33,6 +36,7 @@ MyForm::MyForm(void)
 
 void MyForm::Paint() {
 	PaintHumans(env->getCitizens());
+	PaintElevator(elevator);
 }
 
 void MyForm::InitializeCitizens(array<Human^>^ humans) {
@@ -50,6 +54,7 @@ void MyForm::SubscribeOnHumans() {
 	array<Human^>^ humans = env->getCitizens();
 	for (int i = 0; i < humans->Length; i++) {
 		humans[i]->ChangePicture += gcnew ChangePictureHandler(this, &MyForm::SetDimentionsPB);
+		elevator->OnElevatorEmbarkation += gcnew ElevatorEmbarkationHandler(humans[i], &Human::tryEmbarkation);
 	}
 }
 
@@ -74,6 +79,28 @@ void MyForm::InitPictureBox(PictureBox^ pictBox, Human^ hum) {
 	pictBox->Visible = hum->isVisible();
 	this->Controls->Add(pictBox);
 	pictBox->BringToFront();
+}
+
+void MyForm::InitPictureBox(PictureBox^ pictBox, Elevator^ hum) {
+	Rectangle^ dim = hum->getDimentionsImg();
+	pictBox->Width = dim->Width;
+	pictBox->Height = dim->Height;
+	pictBox->Location = Point(dim->X, dim->Y);
+	pictBox->Visible = hum->isVisible();
+	this->Controls->Add(pictBox);
+	pictBox->BringToFront();
+}
+
+void MyForm::PaintElevator(Elevator^ elev) {
+	if (elev->isVisible()) {
+		Rectangle^ dim = elev->getDimentionsImg();
+		elevatorPicture->BeginInvoke(gcnew ChangePictureBoxImage(this, &MyForm::InvokeSetImage), elevatorPicture, elev->getImage(), elev->isVisible());
+		elevatorPicture->BeginInvoke(gcnew ChangePictureBoxLocation(this, &MyForm::InvokeSetLocation), elevatorPicture, Point(dim->X, dim->Y));
+	}
+	else {
+		elevatorPicture->BeginInvoke(gcnew ChangePictureBoxImage(this, &MyForm::InvokeSetImage), elevatorPicture, elev->getImage(), elev->isVisible());
+	}
+	
 }
 
 void MyForm::PaintHumans(array <Human^>^ humans) {
@@ -117,8 +144,10 @@ void MyForm::ChangeInformation() {
 	String^ tempData = mainTimer->GetTimeInfo();
 	String^ tempData1 = "Current time: " + tempData->Split(' ')[1] + ":" + tempData->Split(' ')[2];
 	String^ tempData2 = "Days late: " + tempData->Split(' ')[0];
+	String^ tempData3 = "Current elevator lvl: " + Convert::ToString(elevator->getTotalVerticalLvl());
 	timeInfoLabel->BeginInvoke(gcnew ChangeTextBoxValue(this, &MyForm::InvokeSetText), timeInfoLabel, tempData1);
 	dateInfoLabel->BeginInvoke(gcnew ChangeTextBoxValue(this, &MyForm::InvokeSetText), dateInfoLabel, tempData2);
+	elevatorLvlLabel->BeginInvoke(gcnew ChangeTextBoxValue(this, &MyForm::InvokeSetText), elevatorLvlLabel, tempData3);
 }
 
 System::Void MyForm::TimerStartStopBtn_Click(System::Object^ sender, System::EventArgs^ e) {

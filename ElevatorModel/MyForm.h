@@ -2,6 +2,7 @@
 #include "Human.h"
 #include "MainTimer.h"
 #include "Enviroment.h"
+#include "Elevator.h"
 namespace ElevatorModel {
 
 	using namespace System;
@@ -48,6 +49,8 @@ namespace ElevatorModel {
 
 
 	private: System::Windows::Forms::Label^ partOfDayLabel;
+	private: System::Windows::Forms::GroupBox^ groupBox1;
+	private: System::Windows::Forms::Label^ elevatorLvlLabel;
 
 
 
@@ -78,10 +81,13 @@ namespace ElevatorModel {
 			this->weatherGroupBox = (gcnew System::Windows::Forms::GroupBox());
 			this->weatherLabel = (gcnew System::Windows::Forms::Label());
 			this->partOfDayLabel = (gcnew System::Windows::Forms::Label());
+			this->groupBox1 = (gcnew System::Windows::Forms::GroupBox());
+			this->elevatorLvlLabel = (gcnew System::Windows::Forms::Label());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->mainBackground))->BeginInit();
 			this->timeGroupBox->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->timeTrackBar))->BeginInit();
 			this->weatherGroupBox->SuspendLayout();
+			this->groupBox1->SuspendLayout();
 			this->SuspendLayout();
 			// 
 			// mainBackground
@@ -174,11 +180,31 @@ namespace ElevatorModel {
 			this->partOfDayLabel->TabIndex = 3;
 			this->partOfDayLabel->Text = L"Current part of day:";
 			// 
+			// groupBox1
+			// 
+			this->groupBox1->Controls->Add(this->elevatorLvlLabel);
+			this->groupBox1->Location = System::Drawing::Point(592, 305);
+			this->groupBox1->Name = L"groupBox1";
+			this->groupBox1->Size = System::Drawing::Size(185, 100);
+			this->groupBox1->TabIndex = 4;
+			this->groupBox1->TabStop = false;
+			this->groupBox1->Text = L"Elevator info";
+			// 
+			// elevatorLvlLabel
+			// 
+			this->elevatorLvlLabel->AutoSize = true;
+			this->elevatorLvlLabel->Location = System::Drawing::Point(8, 31);
+			this->elevatorLvlLabel->Name = L"elevatorLvlLabel";
+			this->elevatorLvlLabel->Size = System::Drawing::Size(98, 13);
+			this->elevatorLvlLabel->TabIndex = 4;
+			this->elevatorLvlLabel->Text = L"Current elevator lvl:";
+			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(784, 711);
+			this->Controls->Add(this->groupBox1);
 			this->Controls->Add(this->weatherGroupBox);
 			this->Controls->Add(this->timeTrackBar);
 			this->Controls->Add(this->timeGroupBox);
@@ -192,6 +218,8 @@ namespace ElevatorModel {
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->timeTrackBar))->EndInit();
 			this->weatherGroupBox->ResumeLayout(false);
 			this->weatherGroupBox->PerformLayout();
+			this->groupBox1->ResumeLayout(false);
+			this->groupBox1->PerformLayout();
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
@@ -208,13 +236,17 @@ private:
 		MainTimer^ mainTimer;
 		Thread^ timerThread;
 		Enviroment^ env;
+		Elevator^ elevator;
 		array<PictureBox^>^ humansPictures;
+		PictureBox^ elevatorPicture;
 		void Paint();
 		void SubscribeOnHumans();
 		void SetDimentionsPB(int id);
 		void InvokeSetDimentionsPB(PictureBox^ pictBox, Rectangle^ dim);
 		void InitPictureBox(PictureBox^ pictBox, Human^ hum);
+		void InitPictureBox(PictureBox^ pictBox, Elevator^ hum);
 		void InitializeCitizens(array<Human^>^ humans);
+		void PaintElevator(Elevator^ elev);
 		void PaintHumans(array<Human^>^ humans);
 		void InvokeSetLocation(PictureBox^ pictureBox, Point^ point);
 		void InvokeSetText(Label^ label, String^ text);

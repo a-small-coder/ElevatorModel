@@ -5,9 +5,8 @@
 #using <system.drawing.dll>
 using namespace System::Drawing;
 using namespace System;
-using namespace System::Drawing;
 
-
+public delegate void CallElevatorHandler(int floor);
 public delegate void OpenDoorHandler(int door, int totalVerticalLvl);
 public delegate void ChangePictureHandler(int id);
 
@@ -50,8 +49,10 @@ protected:
 	int elevatorWaitingTimeRand = 20 * 6;
 	static int countObjects = 0;
 	int id;
+	int  embarkated; // 0 - no, 1 - start, 2 - end nearly
 public:
 	static event OpenDoorHandler^ OnOpenDoor;
+	static event CallElevatorHandler^ OnCallElevator;
 	event ChangePictureHandler^ ChangePicture;
 	Human() {
 		MainTimer::OnMinChange += gcnew MinChangeHandler(this, &Human::live);
@@ -77,7 +78,10 @@ public:
 		countObjects += 1;
 		id = countObjects;
 		whenGoMin = (behaviorType * 5 + rrand(5, 25)) * 6;
+		embarkated = 0;
 	}
+
+	
 
 	void setNeedGoBack(int hour) {
 		if (hour == whenGoHome) {
@@ -138,7 +142,14 @@ public:
 			
 		}
 		if (whatObjectNearby == 1) { // at elevator
-			waitElevator();
+
+			if (embarkated == 1) {
+				embarkating();
+			}
+			else {
+				waitElevator();
+			}
+			
 			if (elevatorWaitingTime == 0) {
 				moveToLadder();
 			}
@@ -176,7 +187,12 @@ public:
 			}
 		}
 		if (whatObjectNearby == 1) { // at elevator
-			waitElevator();
+			if (embarkated == 1) {
+				embarkating();
+			}
+			else {
+				waitElevator();
+			}
 			if (elevatorWaitingTime == 0) {
 				moveToLadder();
 			}
@@ -214,7 +230,12 @@ public:
 			}
 		}
 		if (whatObjectNearby == 1) { // at elevator
-			waitElevator();
+			if (embarkated == 1) {
+				embarkating();
+			}
+			else {
+				waitElevator();
+			}
 			if (elevatorWaitingTime == 0) {
 				moveToLadder();
 			}
@@ -251,7 +272,12 @@ public:
 			goInHouse();
 		}
 		if (whatObjectNearby == 1) {
-			waitElevator();
+			if (embarkated == 1) {
+				embarkating();
+			}
+			else {
+				waitElevator();
+			}
 			if (elevatorWaitingTime == 0) {
 				moveToLadder();
 			}
@@ -290,6 +316,23 @@ public:
 		}
 	}
 
+	void embarkating() {
+		if (x < 238) {
+			moveHorizontal(false);
+		}
+		else {
+			embarkated = 2;
+			visible = false;
+		}
+
+	}
+
+	void tryEmbarkation(int spaceLost, int elevatorVerticalLvl) {
+		if (elevatorVerticalLvl == totalVerticalLvl && spaceLost > 0){
+			embarkated = 1;
+		}
+	}
+
 	void goToElevator() {
 		if (x > elevatorX) {
 			moveHorizontal(false);
@@ -300,8 +343,9 @@ public:
 	}
 
 	void waitElevator() {
+		OnCallElevator(totalVerticalLvl);
 		if (elevatorWaitingTime > 0) {
-			if (elevatorWaitingTime < 5*6) {
+			if (elevatorWaitingTime < 5 * 6) {
 				img = Image::FromFile("img\\people" + Convert::ToString(behaviorType) + "Rage.png");
 				ChangePicture(id);
 			}
@@ -311,6 +355,7 @@ public:
 			ChangePicture(id);
 			img = Image::FromFile("img\\people" + Convert::ToString(behaviorType) + ".png");
 		}
+		
 	}
 
 	void moveToLadder() {

@@ -1,7 +1,6 @@
 #pragma once
 public delegate void HourChangeHandler(int hour);
 public delegate void MinChangeHandler();
-public delegate void MinChangeHandler2(int mins, int hour);
 
 using namespace System;
 using namespace System::Threading;
@@ -11,7 +10,6 @@ ref class MainTimer
 public: 
 	static event HourChangeHandler^ OnHourChange;
 	static event MinChangeHandler^ OnMinChange;
-	static event MinChangeHandler2^ OnSendMins;
 private:
 	const int SSIM = 60 * 6;
 	const int SHID = 24;
@@ -83,7 +81,6 @@ public:
 				mins += sec / SSIM;
 				sec %= SSIM;
 				OnMinChange();
-				//OnSendMins(mins, hours);
 				if (mins >= SSIM) {
 					hours += mins / SSIM;
 					mins %= SSIM;

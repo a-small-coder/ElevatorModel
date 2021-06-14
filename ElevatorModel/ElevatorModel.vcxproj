@@ -119,12 +119,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Elevator.cpp" />
     <ClCompile Include="Enviroment.cpp" />
     <ClCompile Include="Human.cpp" />
     <ClCompile Include="MyForm.cpp" />
     <ClCompile Include="MainTimer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Elevator.h" />
     <ClInclude Include="Enviroment.h" />
     <ClInclude Include="Human.h" />
     <ClInclude Include="MyForm.h">
