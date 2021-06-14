@@ -7,6 +7,10 @@ using namespace System::Drawing;
 using namespace System;
 using namespace System::Drawing;
 
+
+public delegate void OpenDoorHandler(int door, int totalVerticalLvl);
+public delegate void ChangePictureHandler(int id);
+
 const int homeDoorX = 320;
 const int elevatorX = 265;
 const int elevatorDoorX = 222;
@@ -16,7 +20,7 @@ const int homeExitX = 380;
 const int rightBorderX = 554;
 const int leftBorderX = 0;
 
-public delegate void OpenDoorHandler(int door, int totalVerticalLvl);
+
 ref class Human
 {
 
@@ -40,10 +44,14 @@ protected:
 	bool needGoBack;
 	int whenGoHome;
 	int whenGoOut;
-
+	int behaviorType;
+	int elevatorWaitingTimeRand = 20 * 6;
+	static int countObjects = 0;
+	int id;
+	//bool needPictureResize;
 public:
-
 	static event OpenDoorHandler^ OnOpenDoor;
+	event ChangePictureHandler^ ChangePicture;
 	Human() {
 		MainTimer::OnMinChange += gcnew MinChangeHandler(this, &Human::live);
 		MainTimer::OnHourChange += gcnew HourChangeHandler(this, &Human::setNeedGoBack);
@@ -55,37 +63,125 @@ public:
 		visible = false;
 		homeIndex = totalVerticalLvl;
 		targetPlaceIndex = rrand(2, 9);
-		elevatorWaitingTime = rrand(20, 40);
-		img = Image::FromFile("img\\testPeople.png");
+		while (targetPlaceIndex == homeIndex) {
+			targetPlaceIndex = rrand(2, 9);
+		}
+		elevatorWaitingTime = rrand(elevatorWaitingTimeRand, elevatorWaitingTimeRand*2);
 		halfStairswalk = false;
 		needGoBack = false;
 		whenGoHome = rrand(18, 22);
 		whenGoOut = rrand(6, 10);
+		behaviorType = rrand(1, 4);
+		img = Image::FromFile("img\\people" + Convert::ToString(behaviorType) + ".png");
+		countObjects += 1;
+		id = countObjects;
 	}
 
 	void setNeedGoBack(int hour) {
 		if (hour == whenGoHome) {
 			needGoBack = true;
-			elevatorWaitingTime = rrand(20, 40);
+			elevatorWaitingTime = rrand(elevatorWaitingTimeRand, elevatorWaitingTimeRand * 2);
 		}
 		if (hour == whenGoOut) {
 			needGoBack = false;
-			elevatorWaitingTime = rrand(20, 40);
+			elevatorWaitingTime = rrand(elevatorWaitingTimeRand, elevatorWaitingTimeRand * 2);
 		}
 
 	}
 
 	void live() {
-		
-		// ------go back--------
-		if (needGoBack) {
-			goFromStreetToHome();
+		if (behaviorType == 2) {
+			// ------go back--------
+			if (needGoBack) {
+				goFromOtherHomeToHome();
+			}
+			else // ----go to neighbour----
+			{
+				goFromHomeToOtherHome();
+			}
 		}
-		else // ----go work----
+		else // go out
 		{
-			goFromHomeToStreet();
+			// ------go back--------
+			if (needGoBack) {
+				goFromStreetToHome();
+			}
+			else // ----go work----
+			{
+				goFromHomeToStreet();
+			}
 		}
 
+	}
+
+	void goFromHomeToOtherHome() {
+		if (whatObjectNearby == 0) { // at home
+			visible = true;
+			goToElevator();
+		}
+		if (whatObjectNearby == 1) { // at elevator
+			waitElevator();
+			if (elevatorWaitingTime == 0) {
+				moveToLadder();
+			}
+		}
+		if (whatObjectNearby == 4) {  // at ladder
+			if (totalVerticalLvl > targetPlaceIndex) {
+				if (!halfStairswalk) {
+					goDowunStairsRight();
+				}
+				else {
+					goDowunStairsLeft();
+				}
+
+			}
+			else if (totalVerticalLvl < targetPlaceIndex) {
+				if (!halfStairswalk) {
+					goUpStairsRight();
+				}
+				else {
+					goUpStairsLeft();
+				}
+			}
+			else {
+				goToApartment();
+			}
+		}
+	}
+
+	void goFromOtherHomeToHome() {
+		if (whatObjectNearby == 9) {
+			visible = true;
+			goToElevator();
+		}
+		if (whatObjectNearby == 1) { // at elevator
+			waitElevator();
+			if (elevatorWaitingTime == 0) {
+				moveToLadder();
+			}
+		}
+		if (whatObjectNearby == 4) {  // at ladder
+			if (totalVerticalLvl > homeIndex) {
+				if (!halfStairswalk) {
+					goDowunStairsRight();
+				}
+				else {
+					goDowunStairsLeft();
+				}
+
+			}
+			else if (totalVerticalLvl < homeIndex) {
+				if (!halfStairswalk) {
+					goUpStairsRight();
+				}
+				else {
+					goUpStairsLeft();
+				}
+			}
+			else {
+				goToApartment();
+			}
+		}
 	}
 
 	void goFromHomeToStreet() {
@@ -178,7 +274,15 @@ public:
 
 	void waitElevator() {
 		if (elevatorWaitingTime > 0) {
+			if (elevatorWaitingTime < 5*6) {
+				img = Image::FromFile("img\\people" + Convert::ToString(behaviorType) + "Rage.png");
+				ChangePicture(id);
+			}
 			elevatorWaitingTime--;
+		}
+		else {
+			ChangePicture(id);
+			img = Image::FromFile("img\\people" + Convert::ToString(behaviorType) + ".png");
 		}
 	}
 
@@ -218,37 +322,63 @@ public:
 		}
 	}
 
-	void moveToExit() {
+	void moveToExit() 
+	{
 		if (x < homeExitX) {
 			moveHorizontal(true);
 		}
 		else {
 			whatObjectNearby = 8;
 		}
-	}
+		
+	} 
 
 	void goOutFrom() {
 		if (y < 640) {
 			moveVertical(false);
 		}
 		else {
-			if (x < rightBorderX) {
-				moveHorizontal(true);
+			if (behaviorType == 1 || behaviorType == 4) { // костыль по определению направления выхода
+				if (x < rightBorderX) {
+					moveHorizontal(true);
+				}
+				else {
+					visible = false;
+					whatObjectNearby = 6;
+				}
 			}
 			else {
-				visible = false;
-				whatObjectNearby = 6;
+				if (x > -30) {
+					moveHorizontal(false);
+				}
+				else {
+					visible = false;
+					whatObjectNearby = 6;
+				}
 			}
+			
 		}
 	}
 
-	void moveToHouse() {
-		if (x > homeExitX) {
-			moveHorizontal(false);
+	void moveToHouse() // костыль по определению направления входа
+	{
+		if (behaviorType == 1 || behaviorType == 4) {
+			if (x > homeExitX) {
+				moveHorizontal(false);
+			}
+			else {
+				whatObjectNearby = 8;
+			}
 		}
 		else {
-			whatObjectNearby = 8;
+			if (x < homeExitX) {
+				moveHorizontal(true);
+			}
+			else {
+				whatObjectNearby = 8;
+			}
 		}
+		
 	}
 
 	void goInHouse() {
@@ -285,17 +415,27 @@ public:
 	}
 
 	void goToApartment() {
+		
 		if (x < homeDoorX) {
 			moveHorizontal(true);
 		}
 		else {
-			whatObjectNearby = 0;
+			if (totalVerticalLvl == homeIndex) {
+				whatObjectNearby = 0;
+			}
+			else {
+				whatObjectNearby = 9;
+			}
 			visible = false;
 		}
 	}
 
 
 	// getters ------------
+	int getId() {
+		return id;
+	}
+
 	Rectangle^ getDimentionsImg() {
 		return gcnew Rectangle(x, y, img->Width, img->Height);
 	}

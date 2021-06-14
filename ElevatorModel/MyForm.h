@@ -202,6 +202,7 @@ public:
 	delegate void ChangePictureBoxImage(PictureBox^ txtBox, Image^ img, bool visible);
 	delegate void ChangePictureBoxLocation(PictureBox^ pictBox, Point^ point);
 	delegate void InitialazePictureBox(PictureBox^ pictBox, Human^ human);
+	delegate void ChangePictureBoxDimentions(PictureBox^ pictBox, Rectangle^ dim);
 
 private:
 		MainTimer^ mainTimer;
@@ -209,6 +210,9 @@ private:
 		Enviroment^ env;
 		array<PictureBox^>^ humansPictures;
 		void Paint();
+		void SubscribeOnHumans();
+		void SetDimentionsPB(int id);
+		void InvokeSetDimentionsPB(PictureBox^ pictBox, Rectangle^ dim);
 		void InitPictureBox(PictureBox^ pictBox, Human^ hum);
 		void InitializeCitizens(array<Human^>^ humans);
 		void PaintHumans(array<Human^>^ humans);

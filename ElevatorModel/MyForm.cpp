@@ -1,4 +1,5 @@
 #include "MyForm.h"
+#include "Human.h"
 #include <iostream>
 #include <ctime>
 #using <system.drawing.dll>
@@ -25,6 +26,8 @@ MyForm::MyForm(void)
 	MainTimer::OnHourChange += gcnew HourChangeHandler(this, &ElevatorModel::MyForm::ChangeBackgroundImg);
 	MainTimer::OnMinChange += gcnew MinChangeHandler(this, &ElevatorModel::MyForm::ChangeInformation);
 	MainTimer::OnMinChange += gcnew MinChangeHandler(this, &ElevatorModel::MyForm::Paint);
+	SubscribeOnHumans();
+	
 	
 	 
 }
@@ -42,6 +45,26 @@ void MyForm::InitializeCitizens(array<Human^>^ humans) {
 		//testHumanPB->BeginInvoke(gcnew InitialazePictureBox(this, &MyForm::InitPictureBox), testHumanPB, humans[i]);
 		humansPictures[i] = testHumanPB;
 	}
+}
+
+void MyForm::SubscribeOnHumans() {
+	array<Human^>^ humans = env->getCitizens();
+	for (int i = 0; i < humans->Length; i++) {
+		humans[i]->ChangePicture += gcnew ChangePictureHandler(this, &MyForm::SetDimentionsPB);
+	}
+}
+
+void MyForm::SetDimentionsPB(int id) {
+	id -= 1;
+	Human^ hum = env->getCitizens()[id];
+	Rectangle^ dim = hum->getDimentionsImg();
+	humansPictures[id]->BeginInvoke(gcnew ChangePictureBoxDimentions(this, &MyForm::InvokeSetDimentionsPB), humansPictures[id], dim);
+}
+
+void MyForm::InvokeSetDimentionsPB(PictureBox^ picture, Rectangle^ dim) {
+	picture->Width = dim->Width;
+	picture->Height = dim->Height;
+	picture->BringToFront();
 }
 
 void MyForm::InitPictureBox(PictureBox^ pictBox, Human^ hum) {
@@ -130,7 +153,7 @@ System::Void MyForm::timeTrackBar_Scroll(System::Object^ sender, System::EventAr
 		mainTimer->SetTimeSpeed(90, 25);
 	}
 	if (timeTrackBar->Value == 5) {
-		mainTimer->SetTimeSpeed(90, 10);
+		mainTimer->SetTimeSpeed(960, 10);
 	}
 	if (mainTimer->IsRunning()) {
 		timerThread->Abort();

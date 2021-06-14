@@ -11,7 +11,7 @@ public:
 	static event HourChangeHandler^ OnHourChange;
 	static event MinChangeHandler^ OnMinChange;
 private:
-	const int SSIM = 60;
+	const int SSIM = 60 * 6;
 	const int SHID = 24;
 	int DTimeS = 10;
 	int secStep = 90;
