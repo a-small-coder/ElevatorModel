@@ -9,6 +9,7 @@ using namespace System;
 public delegate void CallElevatorHandler(int floor);
 public delegate void OpenDoorHandler(int door, int totalVerticalLvl);
 public delegate void ChangePictureHandler(int id);
+public delegate void EmbarkatedInElevatorHandler(int targetLvl, int id);
 
 const int homeDoorX = 320;
 const int elevatorX = 265;
@@ -46,7 +47,7 @@ protected:
 	int whenGoOut;
 	int whenGoMin;
 	int behaviorType;
-	int elevatorWaitingTimeRand = 20 * 6;
+	int elevatorWaitingTimeRand = 25 * 6;
 	static int countObjects = 0;
 	int id;
 	int  embarkated; // 0 - no, 1 - start, 2 - end nearly
@@ -54,6 +55,7 @@ public:
 	static event OpenDoorHandler^ OnOpenDoor;
 	static event CallElevatorHandler^ OnCallElevator;
 	event ChangePictureHandler^ ChangePicture;
+	event EmbarkatedInElevatorHandler^ EmbarkatedInElevator;
 	Human() {
 		MainTimer::OnMinChange += gcnew MinChangeHandler(this, &Human::live);
 		MainTimer::OnHourChange += gcnew HourChangeHandler(this, &Human::setNeedGoBack);
@@ -63,10 +65,7 @@ public:
 		whatObjectNearby = 0;
 		visible = false;
 		homeIndex = totalVerticalLvl;
-		targetPlaceIndex = rrand(2, 9);
-		while (targetPlaceIndex == homeIndex) {
-			targetPlaceIndex = rrand(2, 9);
-		}
+		
 		elevatorWaitingTime = rrand(elevatorWaitingTimeRand, elevatorWaitingTimeRand*2);
 		halfStairswalk = false;
 		needGoBack = false;
@@ -79,6 +78,15 @@ public:
 		id = countObjects;
 		whenGoMin = (behaviorType * 5 + rrand(5, 25)) * 6;
 		embarkated = 0;
+		if (behaviorType != 2) {
+			targetPlaceIndex = 1;
+		}
+		else {
+			targetPlaceIndex = rrand(2, 9);
+			while (targetPlaceIndex == homeIndex) {
+				targetPlaceIndex = rrand(2, 9);
+			}
+		}
 	}
 
 	
@@ -89,12 +97,41 @@ public:
 			needGoOut = false;
 			elevatorWaitingTime = rrand(elevatorWaitingTimeRand, elevatorWaitingTimeRand * 2);
 			whenGoMin = (behaviorType * 5 + rrand(5, 25)) * 6;
+			if (totalVerticalLvl != homeIndex) {
+				targetPlaceIndex = homeIndex;
+			}
+			else {
+				if (behaviorType != 2) {
+					targetPlaceIndex = 1;
+				}
+				else {
+					targetPlaceIndex = rrand(2, 9);
+					while (targetPlaceIndex == homeIndex) {
+						targetPlaceIndex = rrand(2, 9);
+					}
+				}
+			}
+			
 		}
 		if (hour == whenGoOut) {
 			needGoBack = false;
 			needGoOut = true;
 			elevatorWaitingTime = rrand(elevatorWaitingTimeRand, elevatorWaitingTimeRand * 2);
 			whenGoMin = (behaviorType * 5 + rrand(5, 25)) * 6;
+			if (totalVerticalLvl != homeIndex) {
+				targetPlaceIndex = homeIndex;
+			}
+			else {
+				if (behaviorType != 2) {
+					targetPlaceIndex = 1;
+				}
+				else {
+					targetPlaceIndex = rrand(2, 9);
+					while (targetPlaceIndex == homeIndex) {
+						targetPlaceIndex = rrand(2, 9);
+					}
+				}
+			}
 		}
 
 	}
@@ -132,6 +169,20 @@ public:
 
 	}
 
+	void disEmbarkation(int Vlvl, int index) {
+		if (index == id) {
+			whatObjectNearby = 4;
+			visible = true;
+			totalVerticalLvl = Vlvl;
+			embarkated = 0;
+			x = 238;
+			y = 650 + 14 - totalVerticalLvl * 64;
+			ChangePicture(id);
+			img = Image::FromFile("img\\people" + Convert::ToString(behaviorType) + ".png");
+		}
+		
+	}
+
 	void goFromHomeToOtherHome() {
 		if (whatObjectNearby == 0) { // at home
 			waitingMins();
@@ -146,7 +197,7 @@ public:
 			if (embarkated == 1) {
 				embarkating();
 			}
-			else {
+			else if (embarkated == 0) {
 				waitElevator();
 			}
 			
@@ -190,7 +241,7 @@ public:
 			if (embarkated == 1) {
 				embarkating();
 			}
-			else {
+			else if (embarkated == 0) {
 				waitElevator();
 			}
 			if (elevatorWaitingTime == 0) {
@@ -233,7 +284,7 @@ public:
 			if (embarkated == 1) {
 				embarkating();
 			}
-			else {
+			else if (embarkated == 0) {
 				waitElevator();
 			}
 			if (elevatorWaitingTime == 0) {
@@ -275,7 +326,7 @@ public:
 			if (embarkated == 1) {
 				embarkating();
 			}
-			else {
+			else if (embarkated == 0) {
 				waitElevator();
 			}
 			if (elevatorWaitingTime == 0) {
@@ -328,9 +379,11 @@ public:
 	}
 
 	void tryEmbarkation(int spaceLost, int elevatorVerticalLvl) {
-		if (elevatorVerticalLvl == totalVerticalLvl && spaceLost > 0){
+		if (elevatorVerticalLvl == totalVerticalLvl && spaceLost > 0 && whatObjectNearby == 1) {
 			embarkated = 1;
+			EmbarkatedInElevator(targetPlaceIndex, id);
 		}
+		
 	}
 
 	void goToElevator() {

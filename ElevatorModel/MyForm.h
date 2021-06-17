@@ -51,6 +51,11 @@ namespace ElevatorModel {
 	private: System::Windows::Forms::Label^ partOfDayLabel;
 	private: System::Windows::Forms::GroupBox^ groupBox1;
 	private: System::Windows::Forms::Label^ elevatorLvlLabel;
+	private: System::Windows::Forms::Label^ elevatorCallsLabel;
+	private: System::Windows::Forms::Label^ elevatorHumansLabel;
+	private: System::Windows::Forms::Label^ elevatorPeopleInLabel;
+	private: System::Windows::Forms::Label^ elevatorHumansIdLabel;
+
 
 
 
@@ -82,7 +87,11 @@ namespace ElevatorModel {
 			this->weatherLabel = (gcnew System::Windows::Forms::Label());
 			this->partOfDayLabel = (gcnew System::Windows::Forms::Label());
 			this->groupBox1 = (gcnew System::Windows::Forms::GroupBox());
+			this->elevatorHumansLabel = (gcnew System::Windows::Forms::Label());
+			this->elevatorCallsLabel = (gcnew System::Windows::Forms::Label());
 			this->elevatorLvlLabel = (gcnew System::Windows::Forms::Label());
+			this->elevatorPeopleInLabel = (gcnew System::Windows::Forms::Label());
+			this->elevatorHumansIdLabel = (gcnew System::Windows::Forms::Label());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->mainBackground))->BeginInit();
 			this->timeGroupBox->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->timeTrackBar))->BeginInit();
@@ -106,7 +115,7 @@ namespace ElevatorModel {
 			this->timeGroupBox->Controls->Add(this->timeInfoLabel);
 			this->timeGroupBox->Location = System::Drawing::Point(592, 13);
 			this->timeGroupBox->Name = L"timeGroupBox";
-			this->timeGroupBox->Size = System::Drawing::Size(185, 100);
+			this->timeGroupBox->Size = System::Drawing::Size(259, 100);
 			this->timeGroupBox->TabIndex = 1;
 			this->timeGroupBox->TabStop = false;
 			this->timeGroupBox->Text = L"Time info";
@@ -146,7 +155,7 @@ namespace ElevatorModel {
 			this->timeTrackBar->Maximum = 5;
 			this->timeTrackBar->Minimum = 1;
 			this->timeTrackBar->Name = L"timeTrackBar";
-			this->timeTrackBar->Size = System::Drawing::Size(171, 45);
+			this->timeTrackBar->Size = System::Drawing::Size(250, 45);
 			this->timeTrackBar->TabIndex = 2;
 			this->timeTrackBar->Value = 3;
 			this->timeTrackBar->Scroll += gcnew System::EventHandler(this, &MyForm::timeTrackBar_Scroll);
@@ -157,7 +166,7 @@ namespace ElevatorModel {
 			this->weatherGroupBox->Controls->Add(this->partOfDayLabel);
 			this->weatherGroupBox->Location = System::Drawing::Point(592, 183);
 			this->weatherGroupBox->Name = L"weatherGroupBox";
-			this->weatherGroupBox->Size = System::Drawing::Size(185, 100);
+			this->weatherGroupBox->Size = System::Drawing::Size(259, 100);
 			this->weatherGroupBox->TabIndex = 3;
 			this->weatherGroupBox->TabStop = false;
 			this->weatherGroupBox->Text = L"Weather";
@@ -182,28 +191,68 @@ namespace ElevatorModel {
 			// 
 			// groupBox1
 			// 
+			this->groupBox1->Controls->Add(this->elevatorHumansIdLabel);
+			this->groupBox1->Controls->Add(this->elevatorPeopleInLabel);
+			this->groupBox1->Controls->Add(this->elevatorHumansLabel);
+			this->groupBox1->Controls->Add(this->elevatorCallsLabel);
 			this->groupBox1->Controls->Add(this->elevatorLvlLabel);
 			this->groupBox1->Location = System::Drawing::Point(592, 305);
 			this->groupBox1->Name = L"groupBox1";
-			this->groupBox1->Size = System::Drawing::Size(185, 100);
+			this->groupBox1->Size = System::Drawing::Size(259, 153);
 			this->groupBox1->TabIndex = 4;
 			this->groupBox1->TabStop = false;
 			this->groupBox1->Text = L"Elevator info";
 			// 
+			// elevatorHumansLabel
+			// 
+			this->elevatorHumansLabel->AutoSize = true;
+			this->elevatorHumansLabel->Location = System::Drawing::Point(11, 76);
+			this->elevatorHumansLabel->Name = L"elevatorHumansLabel";
+			this->elevatorHumansLabel->Size = System::Drawing::Size(13, 13);
+			this->elevatorHumansLabel->TabIndex = 6;
+			this->elevatorHumansLabel->Text = L"h";
+			// 
+			// elevatorCallsLabel
+			// 
+			this->elevatorCallsLabel->AutoSize = true;
+			this->elevatorCallsLabel->Location = System::Drawing::Point(11, 54);
+			this->elevatorCallsLabel->Name = L"elevatorCallsLabel";
+			this->elevatorCallsLabel->Size = System::Drawing::Size(28, 13);
+			this->elevatorCallsLabel->TabIndex = 5;
+			this->elevatorCallsLabel->Text = L"calls";
+			// 
 			// elevatorLvlLabel
 			// 
 			this->elevatorLvlLabel->AutoSize = true;
-			this->elevatorLvlLabel->Location = System::Drawing::Point(8, 31);
+			this->elevatorLvlLabel->Location = System::Drawing::Point(11, 30);
 			this->elevatorLvlLabel->Name = L"elevatorLvlLabel";
 			this->elevatorLvlLabel->Size = System::Drawing::Size(98, 13);
 			this->elevatorLvlLabel->TabIndex = 4;
 			this->elevatorLvlLabel->Text = L"Current elevator lvl:";
 			// 
+			// elevatorPeopleInLabel
+			// 
+			this->elevatorPeopleInLabel->AutoSize = true;
+			this->elevatorPeopleInLabel->Location = System::Drawing::Point(11, 120);
+			this->elevatorPeopleInLabel->Name = L"elevatorPeopleInLabel";
+			this->elevatorPeopleInLabel->Size = System::Drawing::Size(50, 13);
+			this->elevatorPeopleInLabel->TabIndex = 7;
+			this->elevatorPeopleInLabel->Text = L"people in";
+			// 
+			// elevatorHumansIdLabel
+			// 
+			this->elevatorHumansIdLabel->AutoSize = true;
+			this->elevatorHumansIdLabel->Location = System::Drawing::Point(11, 97);
+			this->elevatorHumansIdLabel->Name = L"elevatorHumansIdLabel";
+			this->elevatorHumansIdLabel->Size = System::Drawing::Size(24, 13);
+			this->elevatorHumansIdLabel->TabIndex = 8;
+			this->elevatorHumansIdLabel->Text = L"h id";
+			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(784, 711);
+			this->ClientSize = System::Drawing::Size(863, 711);
 			this->Controls->Add(this->groupBox1);
 			this->Controls->Add(this->weatherGroupBox);
 			this->Controls->Add(this->timeTrackBar);

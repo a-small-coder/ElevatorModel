@@ -55,6 +55,8 @@ void MyForm::SubscribeOnHumans() {
 	for (int i = 0; i < humans->Length; i++) {
 		humans[i]->ChangePicture += gcnew ChangePictureHandler(this, &MyForm::SetDimentionsPB);
 		elevator->OnElevatorEmbarkation += gcnew ElevatorEmbarkationHandler(humans[i], &Human::tryEmbarkation);
+		humans[i]->EmbarkatedInElevator += gcnew EmbarkatedInElevatorHandler(elevator, &Elevator::acceptEmbarkation);
+		elevator->DisEmbarkation += gcnew DisEmbarkationHandler(humans[i], &Human::disEmbarkation);
 	}
 }
 
@@ -141,6 +143,9 @@ void MyForm::ChangeBackgroundImg(int currentHour) {
 }
 
 void MyForm::ChangeInformation() {
+	String^ elevatorHumansId = elevator->HumansInIdToString();
+	String^ elevatorCalls = elevator->calledFloorsToString();
+	String^ elevatorHumans = elevator->HumansInToString();
 	String^ tempData = mainTimer->GetTimeInfo();
 	String^ tempData1 = "Current time: " + tempData->Split(' ')[1] + ":" + tempData->Split(' ')[2];
 	String^ tempData2 = "Days late: " + tempData->Split(' ')[0];
@@ -148,6 +153,10 @@ void MyForm::ChangeInformation() {
 	timeInfoLabel->BeginInvoke(gcnew ChangeTextBoxValue(this, &MyForm::InvokeSetText), timeInfoLabel, tempData1);
 	dateInfoLabel->BeginInvoke(gcnew ChangeTextBoxValue(this, &MyForm::InvokeSetText), dateInfoLabel, tempData2);
 	elevatorLvlLabel->BeginInvoke(gcnew ChangeTextBoxValue(this, &MyForm::InvokeSetText), elevatorLvlLabel, tempData3);
+	elevatorCallsLabel->BeginInvoke(gcnew ChangeTextBoxValue(this, &MyForm::InvokeSetText), elevatorCallsLabel, elevatorCalls);
+	elevatorHumansLabel->BeginInvoke(gcnew ChangeTextBoxValue(this, &MyForm::InvokeSetText), elevatorHumansLabel, elevatorHumans);
+	elevatorHumansIdLabel->BeginInvoke(gcnew ChangeTextBoxValue(this, &MyForm::InvokeSetText), elevatorHumansIdLabel, elevatorHumansId);
+	elevatorPeopleInLabel->BeginInvoke(gcnew ChangeTextBoxValue(this, &MyForm::InvokeSetText), elevatorPeopleInLabel, elevator->getPeopleIn());
 }
 
 System::Void MyForm::TimerStartStopBtn_Click(System::Object^ sender, System::EventArgs^ e) {
