@@ -62,16 +62,19 @@ public:
 		Human::OnCallElevator += gcnew CallElevatorHandler(this, &Elevator::listenCall);
 	}
 
-	void acceptEmbarkation(int targetLvl, int id) {
-		int i = findIndex(HumansInId, id);
-		if (peopleIn < capacity && i == -1) {
-			listenCall(targetLvl);
-			targetVerticalLvl = getFloorDownTarget(targetLvl);
-			waitingHumansTime = 10;
-			HumansIn[peopleIn] = targetLvl;
-			HumansInId[peopleIn] = id;
-			peopleIn += 1;
+	void acceptEmbarkation(int targetLvl, int id, int elevatorWaitingTime) {
+		if (elevatorWaitingTime > 0) {
+			int i = findIndex(HumansInId, id);
+			if (peopleIn < capacity && i == -1) {
+				listenCall(targetLvl);
+				targetVerticalLvl = getFloorDownTarget(targetLvl);
+				waitingHumansTime = 10;
+				HumansIn[peopleIn] = targetLvl;
+				HumansInId[peopleIn] = id;
+				peopleIn += 1;
+			}
 		}
+		
 		
 	}
 

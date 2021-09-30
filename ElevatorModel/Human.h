@@ -9,7 +9,7 @@ using namespace System;
 public delegate void CallElevatorHandler(int floor);
 public delegate void OpenDoorHandler(int door, int totalVerticalLvl);
 public delegate void ChangePictureHandler(int id);
-public delegate void EmbarkatedInElevatorHandler(int targetLvl, int id);
+public delegate void EmbarkatedInElevatorHandler(int targetLvl, int id, int elevatorWaitingTime);
 
 const int homeDoorX = 320;
 const int elevatorX = 265;
@@ -381,7 +381,7 @@ public:
 	void tryEmbarkation(int spaceLost, int elevatorVerticalLvl) {
 		if (elevatorVerticalLvl == totalVerticalLvl && spaceLost > 0 && whatObjectNearby == 1) {
 			embarkated = 1;
-			EmbarkatedInElevator(targetPlaceIndex, id);
+			EmbarkatedInElevator(targetPlaceIndex, id, elevatorWaitingTime);
 		}
 		
 	}

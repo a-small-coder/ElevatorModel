@@ -55,6 +55,7 @@ namespace ElevatorModel {
 	private: System::Windows::Forms::Label^ elevatorHumansLabel;
 	private: System::Windows::Forms::Label^ elevatorPeopleInLabel;
 	private: System::Windows::Forms::Label^ elevatorHumansIdLabel;
+	private: System::Windows::Forms::Label^ PeopleCountLable;
 
 
 
@@ -84,14 +85,15 @@ namespace ElevatorModel {
 			this->timeInfoLabel = (gcnew System::Windows::Forms::Label());
 			this->timeTrackBar = (gcnew System::Windows::Forms::TrackBar());
 			this->weatherGroupBox = (gcnew System::Windows::Forms::GroupBox());
+			this->PeopleCountLable = (gcnew System::Windows::Forms::Label());
 			this->weatherLabel = (gcnew System::Windows::Forms::Label());
 			this->partOfDayLabel = (gcnew System::Windows::Forms::Label());
 			this->groupBox1 = (gcnew System::Windows::Forms::GroupBox());
+			this->elevatorHumansIdLabel = (gcnew System::Windows::Forms::Label());
+			this->elevatorPeopleInLabel = (gcnew System::Windows::Forms::Label());
 			this->elevatorHumansLabel = (gcnew System::Windows::Forms::Label());
 			this->elevatorCallsLabel = (gcnew System::Windows::Forms::Label());
 			this->elevatorLvlLabel = (gcnew System::Windows::Forms::Label());
-			this->elevatorPeopleInLabel = (gcnew System::Windows::Forms::Label());
-			this->elevatorHumansIdLabel = (gcnew System::Windows::Forms::Label());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->mainBackground))->BeginInit();
 			this->timeGroupBox->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->timeTrackBar))->BeginInit();
@@ -113,81 +115,108 @@ namespace ElevatorModel {
 			this->timeGroupBox->Controls->Add(this->TimerStartStopBtn);
 			this->timeGroupBox->Controls->Add(this->dateInfoLabel);
 			this->timeGroupBox->Controls->Add(this->timeInfoLabel);
-			this->timeGroupBox->Location = System::Drawing::Point(592, 13);
+			this->timeGroupBox->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->timeGroupBox->Location = System::Drawing::Point(576, 12);
 			this->timeGroupBox->Name = L"timeGroupBox";
-			this->timeGroupBox->Size = System::Drawing::Size(259, 100);
+			this->timeGroupBox->Size = System::Drawing::Size(275, 123);
 			this->timeGroupBox->TabIndex = 1;
 			this->timeGroupBox->TabStop = false;
-			this->timeGroupBox->Text = L"Time info";
+			this->timeGroupBox->Text = L"Информация о времени";
 			// 
 			// TimerStartStopBtn
 			// 
-			this->TimerStartStopBtn->Location = System::Drawing::Point(9, 72);
+			this->TimerStartStopBtn->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular,
+				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(204)));
+			this->TimerStartStopBtn->Location = System::Drawing::Point(14, 89);
 			this->TimerStartStopBtn->Name = L"TimerStartStopBtn";
-			this->TimerStartStopBtn->Size = System::Drawing::Size(171, 23);
+			this->TimerStartStopBtn->Size = System::Drawing::Size(239, 30);
 			this->TimerStartStopBtn->TabIndex = 2;
-			this->TimerStartStopBtn->Text = L"Start/Stop";
+			this->TimerStartStopBtn->Text = L"Начать / Пауза";
 			this->TimerStartStopBtn->UseVisualStyleBackColor = true;
 			this->TimerStartStopBtn->Click += gcnew System::EventHandler(this, &MyForm::TimerStartStopBtn_Click);
 			// 
 			// dateInfoLabel
 			// 
 			this->dateInfoLabel->AutoSize = true;
-			this->dateInfoLabel->Location = System::Drawing::Point(6, 25);
+			this->dateInfoLabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->dateInfoLabel->Location = System::Drawing::Point(6, 29);
 			this->dateInfoLabel->Name = L"dateInfoLabel";
-			this->dateInfoLabel->Size = System::Drawing::Size(68, 13);
+			this->dateInfoLabel->Size = System::Drawing::Size(232, 16);
 			this->dateInfoLabel->TabIndex = 1;
-			this->dateInfoLabel->Text = L"Current date:";
+			this->dateInfoLabel->Text = L"Прошло дней с начала симуляции:";
+			this->dateInfoLabel->Click += gcnew System::EventHandler(this, &MyForm::dateInfoLabel_Click);
 			// 
 			// timeInfoLabel
 			// 
 			this->timeInfoLabel->AutoSize = true;
-			this->timeInfoLabel->Location = System::Drawing::Point(7, 46);
+			this->timeInfoLabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->timeInfoLabel->Location = System::Drawing::Point(8, 56);
 			this->timeInfoLabel->Name = L"timeInfoLabel";
-			this->timeInfoLabel->Size = System::Drawing::Size(66, 13);
+			this->timeInfoLabel->Size = System::Drawing::Size(111, 16);
 			this->timeInfoLabel->TabIndex = 0;
-			this->timeInfoLabel->Text = L"Current time:";
+			this->timeInfoLabel->Text = L"Текущее время:";
 			// 
 			// timeTrackBar
 			// 
 			this->timeTrackBar->LargeChange = 1;
-			this->timeTrackBar->Location = System::Drawing::Point(601, 131);
+			this->timeTrackBar->Location = System::Drawing::Point(576, 155);
 			this->timeTrackBar->Maximum = 5;
 			this->timeTrackBar->Minimum = 1;
 			this->timeTrackBar->Name = L"timeTrackBar";
-			this->timeTrackBar->Size = System::Drawing::Size(250, 45);
+			this->timeTrackBar->Size = System::Drawing::Size(275, 45);
 			this->timeTrackBar->TabIndex = 2;
 			this->timeTrackBar->Value = 3;
 			this->timeTrackBar->Scroll += gcnew System::EventHandler(this, &MyForm::timeTrackBar_Scroll);
 			// 
 			// weatherGroupBox
 			// 
+			this->weatherGroupBox->Controls->Add(this->PeopleCountLable);
 			this->weatherGroupBox->Controls->Add(this->weatherLabel);
 			this->weatherGroupBox->Controls->Add(this->partOfDayLabel);
-			this->weatherGroupBox->Location = System::Drawing::Point(592, 183);
+			this->weatherGroupBox->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->weatherGroupBox->Location = System::Drawing::Point(576, 206);
 			this->weatherGroupBox->Name = L"weatherGroupBox";
-			this->weatherGroupBox->Size = System::Drawing::Size(259, 100);
+			this->weatherGroupBox->Size = System::Drawing::Size(275, 131);
 			this->weatherGroupBox->TabIndex = 3;
 			this->weatherGroupBox->TabStop = false;
-			this->weatherGroupBox->Text = L"Weather";
+			this->weatherGroupBox->Text = L"Окружающая среда";
+			// 
+			// PeopleCountLable
+			// 
+			this->PeopleCountLable->AutoSize = true;
+			this->PeopleCountLable->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular,
+				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(204)));
+			this->PeopleCountLable->Location = System::Drawing::Point(8, 88);
+			this->PeopleCountLable->Name = L"PeopleCountLable";
+			this->PeopleCountLable->Size = System::Drawing::Size(179, 16);
+			this->PeopleCountLable->TabIndex = 4;
+			this->PeopleCountLable->Text = L"Общее количество людей:";
 			// 
 			// weatherLabel
 			// 
 			this->weatherLabel->AutoSize = true;
+			this->weatherLabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
 			this->weatherLabel->Location = System::Drawing::Point(8, 57);
 			this->weatherLabel->Name = L"weatherLabel";
-			this->weatherLabel->Size = System::Drawing::Size(85, 13);
+			this->weatherLabel->Size = System::Drawing::Size(116, 16);
 			this->weatherLabel->TabIndex = 3;
-			this->weatherLabel->Text = L"Current weather:";
+			this->weatherLabel->Text = L"Текущая погода:";
 			// 
 			// partOfDayLabel
 			// 
 			this->partOfDayLabel->AutoSize = true;
+			this->partOfDayLabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
 			this->partOfDayLabel->Location = System::Drawing::Point(7, 29);
 			this->partOfDayLabel->Name = L"partOfDayLabel";
-			this->partOfDayLabel->Size = System::Drawing::Size(97, 13);
+			this->partOfDayLabel->Size = System::Drawing::Size(151, 16);
 			this->partOfDayLabel->TabIndex = 3;
-			this->partOfDayLabel->Text = L"Current part of day:";
+			this->partOfDayLabel->Text = L"Текущее время суток:";
 			// 
 			// groupBox1
 			// 
@@ -196,57 +225,65 @@ namespace ElevatorModel {
 			this->groupBox1->Controls->Add(this->elevatorHumansLabel);
 			this->groupBox1->Controls->Add(this->elevatorCallsLabel);
 			this->groupBox1->Controls->Add(this->elevatorLvlLabel);
-			this->groupBox1->Location = System::Drawing::Point(592, 305);
+			this->groupBox1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->groupBox1->Location = System::Drawing::Point(576, 360);
 			this->groupBox1->Name = L"groupBox1";
-			this->groupBox1->Size = System::Drawing::Size(259, 153);
+			this->groupBox1->Size = System::Drawing::Size(275, 61);
 			this->groupBox1->TabIndex = 4;
 			this->groupBox1->TabStop = false;
-			this->groupBox1->Text = L"Elevator info";
-			// 
-			// elevatorHumansLabel
-			// 
-			this->elevatorHumansLabel->AutoSize = true;
-			this->elevatorHumansLabel->Location = System::Drawing::Point(11, 76);
-			this->elevatorHumansLabel->Name = L"elevatorHumansLabel";
-			this->elevatorHumansLabel->Size = System::Drawing::Size(13, 13);
-			this->elevatorHumansLabel->TabIndex = 6;
-			this->elevatorHumansLabel->Text = L"h";
-			// 
-			// elevatorCallsLabel
-			// 
-			this->elevatorCallsLabel->AutoSize = true;
-			this->elevatorCallsLabel->Location = System::Drawing::Point(11, 54);
-			this->elevatorCallsLabel->Name = L"elevatorCallsLabel";
-			this->elevatorCallsLabel->Size = System::Drawing::Size(28, 13);
-			this->elevatorCallsLabel->TabIndex = 5;
-			this->elevatorCallsLabel->Text = L"calls";
-			// 
-			// elevatorLvlLabel
-			// 
-			this->elevatorLvlLabel->AutoSize = true;
-			this->elevatorLvlLabel->Location = System::Drawing::Point(11, 30);
-			this->elevatorLvlLabel->Name = L"elevatorLvlLabel";
-			this->elevatorLvlLabel->Size = System::Drawing::Size(98, 13);
-			this->elevatorLvlLabel->TabIndex = 4;
-			this->elevatorLvlLabel->Text = L"Current elevator lvl:";
-			// 
-			// elevatorPeopleInLabel
-			// 
-			this->elevatorPeopleInLabel->AutoSize = true;
-			this->elevatorPeopleInLabel->Location = System::Drawing::Point(11, 120);
-			this->elevatorPeopleInLabel->Name = L"elevatorPeopleInLabel";
-			this->elevatorPeopleInLabel->Size = System::Drawing::Size(50, 13);
-			this->elevatorPeopleInLabel->TabIndex = 7;
-			this->elevatorPeopleInLabel->Text = L"people in";
+			this->groupBox1->Text = L"Информация о лифте";
 			// 
 			// elevatorHumansIdLabel
 			// 
 			this->elevatorHumansIdLabel->AutoSize = true;
+			this->elevatorHumansIdLabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular,
+				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(204)));
 			this->elevatorHumansIdLabel->Location = System::Drawing::Point(11, 97);
 			this->elevatorHumansIdLabel->Name = L"elevatorHumansIdLabel";
-			this->elevatorHumansIdLabel->Size = System::Drawing::Size(24, 13);
+			this->elevatorHumansIdLabel->Size = System::Drawing::Size(0, 16);
 			this->elevatorHumansIdLabel->TabIndex = 8;
-			this->elevatorHumansIdLabel->Text = L"h id";
+			// 
+			// elevatorPeopleInLabel
+			// 
+			this->elevatorPeopleInLabel->AutoSize = true;
+			this->elevatorPeopleInLabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular,
+				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(204)));
+			this->elevatorPeopleInLabel->Location = System::Drawing::Point(11, 120);
+			this->elevatorPeopleInLabel->Name = L"elevatorPeopleInLabel";
+			this->elevatorPeopleInLabel->Size = System::Drawing::Size(0, 16);
+			this->elevatorPeopleInLabel->TabIndex = 7;
+			// 
+			// elevatorHumansLabel
+			// 
+			this->elevatorHumansLabel->AutoSize = true;
+			this->elevatorHumansLabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular,
+				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(204)));
+			this->elevatorHumansLabel->Location = System::Drawing::Point(11, 76);
+			this->elevatorHumansLabel->Name = L"elevatorHumansLabel";
+			this->elevatorHumansLabel->Size = System::Drawing::Size(0, 16);
+			this->elevatorHumansLabel->TabIndex = 6;
+			// 
+			// elevatorCallsLabel
+			// 
+			this->elevatorCallsLabel->AutoSize = true;
+			this->elevatorCallsLabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular,
+				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(204)));
+			this->elevatorCallsLabel->Location = System::Drawing::Point(11, 54);
+			this->elevatorCallsLabel->Name = L"elevatorCallsLabel";
+			this->elevatorCallsLabel->Size = System::Drawing::Size(0, 16);
+			this->elevatorCallsLabel->TabIndex = 5;
+			// 
+			// elevatorLvlLabel
+			// 
+			this->elevatorLvlLabel->AutoSize = true;
+			this->elevatorLvlLabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular,
+				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(204)));
+			this->elevatorLvlLabel->Location = System::Drawing::Point(11, 30);
+			this->elevatorLvlLabel->Name = L"elevatorLvlLabel";
+			this->elevatorLvlLabel->Size = System::Drawing::Size(181, 16);
+			this->elevatorLvlLabel->TabIndex = 4;
+			this->elevatorLvlLabel->Text = L"Лифт находится на этаже: ";
 			// 
 			// MyForm
 			// 
@@ -302,8 +339,11 @@ private:
 		void InvokeSetImage(PictureBox^ pictureBox, Image^ img, bool visible);
 		void ChangeBackgroundImg(int currentHour);
 		void ChangeInformation();
+		String^ getPerettyTime(String^ h, String^ m);
 		System::Void TimerStartStopBtn_Click(System::Object^ sender, System::EventArgs^ e);
 
 		System::Void timeTrackBar_Scroll(System::Object^ sender, System::EventArgs^ e);
+private: System::Void dateInfoLabel_Click(System::Object^ sender, System::EventArgs^ e) {
+}
 };
 }

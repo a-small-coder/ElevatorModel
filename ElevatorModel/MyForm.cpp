@@ -4,6 +4,7 @@
 #using <system.drawing.dll>
 using namespace ElevatorModel;
 using namespace Drawing;
+int citizens = 5;
 
 [STAThreadAttribute]
 void main(array<String^>^ args) {
@@ -23,7 +24,7 @@ MyForm::MyForm(void)
 	elevator = gcnew Elevator();
 	elevatorPicture = gcnew PictureBox();
 	InitPictureBox(elevatorPicture, elevator);
-	env->createCitizens(5);
+	env->createCitizens(citizens);
 	InitializeCitizens(env->getCitizens());
 	MainTimer::OnHourChange += gcnew HourChangeHandler(this, &ElevatorModel::MyForm::ChangeBackgroundImg);
 	MainTimer::OnMinChange += gcnew MinChangeHandler(this, &ElevatorModel::MyForm::ChangeInformation);
@@ -134,8 +135,8 @@ void MyForm::InvokeSetImage(PictureBox^ pictureBox, Image^ img, bool visible) {
 
 void MyForm::ChangeBackgroundImg(int currentHour) {
 	Image^ img = env->GetCurrentImage();
-	String^ temp1 = "Current weather: " + env->GetEnviromentView()->Split(' ')[1];
-	String^ temp2 = "Current part of day: " + env->GetEnviromentView()->Split(' ')[0];
+	String^ temp1 = "Текущая погода: " + env->GetEnviromentView()->Split(' ')[1];
+	String^ temp2 = "Текущее время суток: " + env->GetEnviromentView()->Split(' ')[0];
 	mainBackground->BeginInvoke(gcnew ChangePictureBoxImage(this, &MyForm::InvokeSetImage), mainBackground, img, true);
 	weatherLabel->BeginInvoke(gcnew ChangeTextBoxValue(this, &MyForm::InvokeSetText), weatherLabel, temp1);
 	partOfDayLabel->BeginInvoke(gcnew ChangeTextBoxValue(this, &MyForm::InvokeSetText), partOfDayLabel, temp2);
@@ -147,16 +148,28 @@ void MyForm::ChangeInformation() {
 	String^ elevatorCalls = elevator->calledFloorsToString();
 	String^ elevatorHumans = elevator->HumansInToString();
 	String^ tempData = mainTimer->GetTimeInfo();
-	String^ tempData1 = "Current time: " + tempData->Split(' ')[1] + ":" + tempData->Split(' ')[2];
-	String^ tempData2 = "Days late: " + tempData->Split(' ')[0];
-	String^ tempData3 = "Current elevator lvl: " + Convert::ToString(elevator->getTotalVerticalLvl());
+	String^ tempData1 = "Текущее время: " + getPerettyTime(tempData->Split(' ')[1], tempData->Split(' ')[2]);
+	String^ tempData2 = "Прошло дней с начала симуляции: " + tempData->Split(' ')[0];
+	String^ tempData3 = "Лифт находится на этаже: " + Convert::ToString(elevator->getTotalVerticalLvl());
+	String^ peopleCount = "Общее количество людей: " + Convert::ToString(citizens);
 	timeInfoLabel->BeginInvoke(gcnew ChangeTextBoxValue(this, &MyForm::InvokeSetText), timeInfoLabel, tempData1);
 	dateInfoLabel->BeginInvoke(gcnew ChangeTextBoxValue(this, &MyForm::InvokeSetText), dateInfoLabel, tempData2);
 	elevatorLvlLabel->BeginInvoke(gcnew ChangeTextBoxValue(this, &MyForm::InvokeSetText), elevatorLvlLabel, tempData3);
-	elevatorCallsLabel->BeginInvoke(gcnew ChangeTextBoxValue(this, &MyForm::InvokeSetText), elevatorCallsLabel, elevatorCalls);
-	elevatorHumansLabel->BeginInvoke(gcnew ChangeTextBoxValue(this, &MyForm::InvokeSetText), elevatorHumansLabel, elevatorHumans);
-	elevatorHumansIdLabel->BeginInvoke(gcnew ChangeTextBoxValue(this, &MyForm::InvokeSetText), elevatorHumansIdLabel, elevatorHumansId);
-	elevatorPeopleInLabel->BeginInvoke(gcnew ChangeTextBoxValue(this, &MyForm::InvokeSetText), elevatorPeopleInLabel, elevator->getPeopleIn());
+	PeopleCountLable->BeginInvoke(gcnew ChangeTextBoxValue(this, &MyForm::InvokeSetText), PeopleCountLable, peopleCount);
+	//elevatorCallsLabel->BeginInvoke(gcnew ChangeTextBoxValue(this, &MyForm::InvokeSetText), elevatorCallsLabel, elevatorCalls);
+	//elevatorHumansLabel->BeginInvoke(gcnew ChangeTextBoxValue(this, &MyForm::InvokeSetText), elevatorHumansLabel, elevatorHumans);
+	//elevatorHumansIdLabel->BeginInvoke(gcnew ChangeTextBoxValue(this, &MyForm::InvokeSetText), elevatorHumansIdLabel, elevatorHumansId);
+	//elevatorPeopleInLabel->BeginInvoke(gcnew ChangeTextBoxValue(this, &MyForm::InvokeSetText), elevatorPeopleInLabel, elevator->getPeopleIn());
+}
+
+System::String^ MyForm::getPerettyTime(String^ h, String^ m) {
+	if (h->Length == 1) {
+		h = "0" + h;
+	}
+	if (m->Length == 1) {
+		m = "0" + m;
+	}
+	return h + ":" + m;
 }
 
 System::Void MyForm::TimerStartStopBtn_Click(System::Object^ sender, System::EventArgs^ e) {
